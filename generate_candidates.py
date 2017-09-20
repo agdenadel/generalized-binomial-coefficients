@@ -1,5 +1,8 @@
 from __future__ import division
 from random import randint
+import os.path
+import urllib
+import gzip
 
 from sequence import Sequence 
 
@@ -14,7 +17,7 @@ def has_empty_values(values):
             
 def parse_file(file):
     sequences = []
-    with open(file, 'r') as file:
+    with gzip.open(file, 'r') as file:
         empty_sequences = 0
         for line in file:
             if line[0] == '#':
@@ -73,8 +76,11 @@ def check_first_values(sequence):
     return True
     
 def main():
-    file = "stripped"
-    sequences = parse_file(file)
+    stripped_file = "stripped.gz"
+    stripped_file_url = "http://oeis.org/" + stripped_file
+    if not os.path.isfile(stripped_file):
+        urllib.urlretrieve (stripped_file_url, "stripped.gz")
+    sequences = parse_file(stripped_file)
     print "Parsed " + str(len(sequences)) + " sequences"
     
     int_count = 0
